@@ -1,0 +1,27 @@
+@using Repositories.Models;
+
+@model List<Customer>
+
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Token Id</th>
+            <th>Token Type</th>
+            <th>Token Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.c_tokenid</td>
+                <td>@customer.c_tokentype</td>
+                <td>
+                    <a class="btn btn-link" asp-controller="Executive" asp-action="TaskUpdate"
+                       asp-route-id="@customer.c_tokenid">@customer.c_tokenstatus</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

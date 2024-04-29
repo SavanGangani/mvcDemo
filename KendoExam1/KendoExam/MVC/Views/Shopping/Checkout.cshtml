@@ -1,0 +1,263 @@
+@{
+    ViewBag.Title = "CheckOut";
+    Layout = "~/Views/Shared/_CLayout.cshtml";
+}
+
+<style>
+    input {
+        max-width: none;
+    }
+</style>
+
+<script src="~/kendoui_new/js/jquery.min.js"></script>
+<script src="~/kendoui_new/js/kendo.all.min.js"></script>
+
+<link href="~/kendoui_new/styles/default-turquoise.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+
+<form id="checkoutForm"></form>
+<span id="popupNotification"></span>
+
+<script>
+    $(document).ready(function () {
+        // kendo notification
+        var popupNotification = $("#popupNotification").kendoNotification().data("kendoNotification");
+        $("#checkoutForm").kendoForm({
+            formData: {
+                c_userid: @ViewBag.userid,
+                c_shoppingid: "", // Only for deleting from cart
+                c_total_price: "",
+                c_albumid: "",
+                c_orderid: "",
+                c_quantity: "",
+                c_fname: "",
+                c_lname: "",
+                c_address: "",
+                c_city: "",
+                c_postalcode: "",
+                c_state: "",
+                c_country: "",
+                c_phone: "",
+                c_email: "",
+                c_priority: "",
+                c_shipdate: ""
+            },
+            layout: "grid",
+            grid: {
+                cols: 2,
+                gutter: 20
+            },
+            items: [
+                {
+                    type: "group",
+                    label: "Personal Information",
+                    layout: "grid",
+                    grid: { cols: 1, gutter: 10 },
+                    items: [
+                        {
+                            field: "c_fname",
+                            label: "First Name",
+                            validation: { required: true, validationMessage: "First name is required!" }
+                        },
+                        {
+                            field: "c_lname",
+                            label: "Last Name",
+                            validation: { required: true, validationMessage: "Last name is required!" }
+                        },
+                        {
+                            field: "c_address",
+                            label: "Address",
+                            validation: { required: true, validationMessage: "Address is required!" }
+                        },
+                        {
+                            field: "c_city",
+                            label: "City",
+                            validation: { required: true, validationMessage: "City is required!" }
+                        },
+                        {
+                            field: "c_postalcode",
+                            label: "Postal Code",
+                            editor: "NumericTextBox",
+                            validation: { required: true, validationMessage: "Postal Code is required!" }
+                        },
+                        {
+                            field: "c_state",
+                            label: "State",
+                            validation: { required: true, validationMessage: "State is required!" }
+                        },
+                        {
+                            field: "c_country",
+                            label: "Country",
+                            validation: { required: true, validationMessage: "Country is required!" }
+                        },
+                        {
+                            field: "c_phone",
+                            label: "Phone No.",
+                            editor: "NumericTextBox",
+                            validation: { required: true, validationMessage: "Phone No. is required!" }
+                        },
+                        {
+                            field: "c_email",
+                            label: "Email",
+                            validation: {
+                                required: true,
+                                email: true,
+                                validationMessage: "Email is not valid!"
+                            }
+                        }
+                    ],
+                },
+                {
+                    type: "group",
+                    label: "Shipping Details",
+                    layout: "grid",
+                    grid: { cols: 1, gutter: 10 },
+                    items: [
+                        {
+                            field: "c_priority",
+                            editor: "DropDownList",
+                            label: "Priority",
+                            validation: {
+                                required: true,
+                                validationMessage: "Priority is required!"
+                            },
+                            colSpan: 1,
+                            editorOptions: {
+                                optionLabel: "Select Priority...",
+                                dataSource: [
+                                    { Name: "Ground" },
+                                    { Name: "Urgent" }
+                                ],
+                                dataTextField: "Name",
+                                dataValueField: "Name"
+                            }
+                        },
+                        {
+                            field: "c_shipdate",
+                            label: "Select Ship Date",
+                            editor: "DatePicker",
+                            validation: { required: true, validationMessage: "Ship Date is required!" },
+                            hint: "Orders can be set ship later, up to 60 days in the future",
+                            editorOptions: {
+                                format: "yyyy/MM/dd",
+
+                                // disabled dates
+                                disableDates: function (date) {
+                                    var dates = getDaysArray();
+                                    if (date && compareDates(date, dates)) {
+                                        return false; // if date is in dates array then not disabled
+                                    } else {
+                                        return true; // else disabled
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            submit: function (e) {
+                e.preventDefault();
+
+                // -------console log-------
+                console.log(e);
+
+                // Get All Cart Details
+                var settings = {
+                    "url": "/Shopping/GetAllCart",
+                    "method": "GET",
+                    "timeout": 0
+                }
+                $.ajax(settings).done(function (response) {
+                    $.each(response, function (index, value) {
+                        e.model.c_shipdate = formatDate(e.model.c_shipdate);
+                        e.model.c_shoppingid = value.c_shoppingid;
+                        e.model.c_albumid = value.c_albumid;
+                        e.model.c_quantity = value.c_quantity;
+                        e.model.c_orderid = @ViewBag.orderId;
+                        e.model.c_total_price = value.c_total_price;
+                        {
+                            // -------console log-------
+                            console.log(e.model);
+
+                            var checkoutSettings = {
+                                "url": "/Shopping/Placeorder",
+                                "method": "GET",
+                                "timeout": 0,
+                                "headers": {
+                                    "Content-Type": "application/json"
+                                },
+                                "data": e.model
+                            }
+                            $.ajax(checkoutSettings).done(function (response) {
+                                console.log(response);
+                                if (response != 0) {
+                                    window.location = "/Shopping/OrderConfirmed?orderId=" + response;
+                                }
+                                else {
+                                    popupNotification.show("There is some error while confirming order!", "error");
+                                }
+                            });
+                        }
+                    });
+                });
+            },
+            clear: function (ev) {
+            }
+        });
+
+        //function shipDatePicker(container, option) {
+        //    $('<input id="c_shipdate" type="date" name="c_shipdate" data-bind="value:c_shipdate">').appendTo(container).kendoDatePicker({
+        //        format: "yyyy/MM/dd",
+
+        //        // disabled dates
+        //        disableDates: function (date) {
+        //            var dates = getDaysArray();
+        //            if (date && compareDates(date, dates)) {
+        //                return false; // if date is in dates array then not disabled
+        //            } else {
+        //                return true; // else disabled
+        //            }
+        //        }
+        //    }).data("kendoDatePicker");
+        //}
+
+        // check if date is in disabled date or not
+        function compareDates(date, dates) {
+            for (var i = 0; i < dates.length; i++) {
+                if (dates[i].getDate() == date.getDate() &&
+                    dates[i].getMonth() == date.getMonth() &&
+                    dates[i].getYear() == date.getYear()) {
+                    return true
+                }
+            }
+        }
+
+        // get array of days from now to next 60 days
+        function getDaysArray() {
+            var endDate = new Date();
+            var numberOfDaysToAdd = 60;
+            endDate.setDate(endDate.getDate() + numberOfDaysToAdd);
+            for (var arr = [], dt = new Date(); dt <= endDate; dt.setDate(dt.getDate() + 1)) {
+                arr.push(new Date(dt));
+            }
+            return arr;
+        };
+    });
+
+    // format date in yyyy-MM-dd
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+</script>

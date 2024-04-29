@@ -1,0 +1,55 @@
+@using Repositories.Models;
+
+@model List<Customer>
+
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+    @if (TempData["tokenmessage"] != null)
+
+    {
+        <script>
+            Swal.fire({
+                title: '@TempData["tokenmessage"]',
+                icon: 'success',
+                confirmButtonText: 'Done'
+            });
+        </script>
+    }
+</head>
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col text-center">
+            <a asp-action="Add" asp-controller="User" class="btn btn-primary">Add more token</a>
+        </div>
+        <div class="col text-center">
+            <a asp-action="Login" asp-controller="Executive" class="btn btn-primary"> Login </a>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Token Id</th>
+                        <th>Token Type</th>
+                        <th>Token Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var customer in Model)
+                    {
+                        <tr>
+                            <td>@customer.c_tokenid</td>
+                            <td>@customer.c_tokentype</td>
+                            <td>@customer.c_tokenstatus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

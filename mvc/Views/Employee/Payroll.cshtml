@@ -1,0 +1,53 @@
+@model mvc.Models.Employee
+
+<table class="table table-striped">
+    <tr>
+        <td>Employee ID</td>
+        <td>@Model.c_empid</td>
+    </tr>
+    <tr>
+        <td>Employee Name</td>
+        <td>@Model.c_empname</td>
+    </tr>
+    <tr>
+        <td>Designation</td>
+        <td>@Model.c_designationname</td>
+    </tr>
+    <tr>
+        <td>GrossSalary</td>
+        <td>@Model.c_grosssalary</td>
+    </tr>
+</table>
+
+
+<h5 class="text-center mt-5 mb-3">Payroll</h5>
+<table class="table table-striped">
+    <tr>
+        <td>Basic</td>
+        <td>@Model.c_basic</td>
+    </tr>
+    <tr>
+        <td>DA</td>
+        <td>@Model.c_da</td>
+    </tr>
+    <tr>
+        <td>HRA</td>
+        <td>@Model.c_hra</td>
+    </tr>
+    <tr>
+        <td>Taxable Salary</td>
+        <td>@Model.c_taxablesalary</td>
+    </tr>
+    <tr>
+        <td>Tax</td>
+        <td>@Model.c_tax</td>
+    </tr>
+    <tr>
+        <th>Take-home</th>
+        <th>@Model.c_takehomepay</th>
+    </tr>
+</table>
+
+
+
+<a asp-action="Edit" asp-controller="Employee" asp-route-id="@Model.c_empid">Edit</a>

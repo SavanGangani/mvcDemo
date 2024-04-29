@@ -1,0 +1,151 @@
+@model Repositories.Models.Album
+
+<h2>Kendo View</h2>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" />
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+
+<div id="grid"></div>
+<h3>@ViewBag.UserId</h3>
+@section Scripts {
+    <script>
+        function fetchAlbumType(callback) {
+            $.ajax({
+                url: "https://localhost:7297/Admin/GetAllAlbumType",
+                dataType: "json",
+                success: function (typeData) {
+                    callback(typeData);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Album Type data:", error);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: "https://localhost:7297/Admin/GetAllAlbum",
+                        dataType: "json"
+                    },
+                    create: {
+                        url: "https://localhost:7297/Admin/AddAlbum",
+                        type: "POST",
+                        dataType: "json"
+                    },
+                    destroy: {
+                        url: function (data) {
+                            return "https://localhost:7297/Admin/DeleteAlbum/" + data.c_albumid;
+                        },
+                        type: "POST",
+                        dataType: "json"
+                    },
+                    update: {
+                        url: function (data) {
+                            return "https://localhost:7297/Admin/EditAlbum" ;
+                        },
+                        type: "POST",
+                        dataType: "json",
+                        data: function (data) {
+                            return data;
+                        }
+                    }
+                },
+                pageSize: 5,
+                schema: {
+                    model: {
+                        id: "c_albumid",
+                        fields: {
+                            c_albumid: { type: "number", editable: false, nullable: false },
+                            c_image: { type: "string" },
+                            c_type: { type: "string", validation: { required: true } },
+                            c_artist: { type: "string", validation: { required: true } },
+                            c_title: { type: "string", validation: { required: true } },
+                            c_price: { type: "number" }
+                        }
+                    }
+                }
+            });
+
+            $("#grid").kendoGrid({
+                dataSource: dataSource,
+                columns: [
+                    { field: "c_albumid", title: "Album id" },
+                    { field: "c_image", title: "Album Art", editor: imageUploadEditor, template: "<img src='#: c_image #' alt='Album Photo' style='width: 50px; height: 50px;' />" },
+                    {
+                        field: "c_type",
+                        title: "Genre",
+                        editor: function (container, options) {
+                            var dropdown = $('<select name="' + options.field + '" id="' + options.field + '"></select>').appendTo(container);
+                            fetchAlbumType(function (typeData) {
+                                $.each(typeData, function (index, type) {
+                                    dropdown.append($('<option></option>').attr('value', type.c_type).text(type.c_type));
+                                });
+                                dropdown.val(options.model.c_type);
+                            });
+                        }
+                    },
+                    { field: "c_artist", title: "Artist" },
+                    { field: "c_title", title: "Title" },
+                    { field: "c_price", title: "Price" },
+                    { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                ],
+                editable: "popup",
+                toolbar: ["create"],
+                pageable: true,
+                sortable: true,
+                filterable: true
+            });
+
+            function imageUploadEditor(container, options) {
+                $('<input type="file" id="temp_name" name="temp_name"  />')
+                    .appendTo(container)
+                    .kendoUpload({
+                        multiple: false,
+                        validation: {
+                            allowedExtensions: [".jpg", ".png", ".jpeg"]
+                        },
+                        select: imageNameChange
+                    });
+
+                $('<input type="hidden" id="c_image" name="c_image" data-bind="value:c_image"  /> ').appendTo(container);
+            }
+
+            function imageNameChange(e) {
+                $.each(e.files, function (index, value) {
+                    var fileNameWithPath = "/images/" + value.name;
+                    $("#c_image").val(fileNameWithPath).change();
+                    var formData = new FormData();
+                    formData.append("file", value.rawFile);
+                    $.ajax({
+                        url: "https://localhost:7297/Admin/SaveImage",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                            console.log("Image upload successful");
+                            $("#popupForm").data("kendoWindow").close();
+                            location.reload();
+                        },
+                        error: function () {
+                            console.error("Error uploading image");
+                        }
+                    });
+                });
+            }
+
+            dataSource.bind("requestEnd", function (e) {
+                if (e.type === "create" || e.type === "update" || e.type === "destroy") {
+                    dataSource.read();
+                }
+            });
+
+            $("#grid").on("click", ".k-grid-cancel-changes", function () {
+                dataSource.cancelChanges();
+            });
+        });
+    </script>
+}

@@ -1,0 +1,42 @@
+@model List< mvc.Models.Employee>
+<h2>Employee</h2>
+
+<p style="margin-block: 22px;">
+    <a class="add-btn" asp-controller="Employee" asp-action="Add"> <button class="btn btn-primary">Add Employee</button> </a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th> ID</th>
+            <th> Name</th>
+            <th> HireDate</th>
+            <th> Gender</th>
+            <th> Salary</th>
+            <th> Designation</th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.c_empid</td>
+                <td>@employee.c_empname</td>
+                <td>@employee.c_hiredate.ToString("dd-MM-yyyy")</td>
+                <td>@employee.c_gender</td>
+                <td>@employee.c_grosssalary</td>
+                <td>@employee.c_designationname</td>
+                <td class="action-buttons">
+                   <a class="edit-btn" asp-action="Edit" asp-controller="Employee"
+                            asp-route-id="@employee.c_empid"> <button class="btn btn-primary"> Edit</button> </a> 
+                     <a class="delete-btn" asp-action="Delete" asp-controller="Employee"
+                            asp-route-id="@employee.c_empid"><Button class="btn btn-danger">Delete</Button></a> 
+                     <a class="delete-btn" asp-action="Payroll" asp-controller="Employee"
+                            asp-route-id="@employee.c_empid"> <button class="btn btn-success">Payout</button> </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

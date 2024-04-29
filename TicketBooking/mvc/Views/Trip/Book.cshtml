@@ -1,0 +1,51 @@
+@using Repositories.Models;
+@model Repositories.Models.Trip
+
+<h1>Book Trip : @Model.c_trip</h1>
+
+<form asp-action="Book" method="post" enctype="multipart/form-data">
+@* <h2 hidden=true>@Model.c_tripid</h2> *@
+<input type="hidden" asp-for="c_tripid" value="@Model.c_tripid"/>
+
+    <div class="form-group">
+        <label >Price:</label>
+        <input asp-for="c_tripprice" value="@Model.c_tripprice" id="c_tripprice" readonly class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label >Available Ticket:</label>
+        <input asp-for="c_tripcurrentticket" readonly class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label >Date:</label>
+        <input  type="Date" asp-for="c_tripdate" class="form-control" required />
+    </div>
+    @* <div class="form-group">
+        <label >Current Stock:</label>
+        <input asp-for="c_tripcurrentticket" class="form-control" required />
+    </div> *@
+    <div class="form-group">
+        <label >QTY:</label>
+        <input asp-for="c_tripqty" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label >Total:</label>
+        <input asp-for="c_totalcost" value="@Model.c_totalcost" readonly name="c_totalcost" readonly class="form-control" required />
+    </div>
+   
+    <button type="submit" class="btn btn-primary">Book</button>
+</form>
+
+<script>
+      document.getElementById('c_tripqty').addEventListener('change', function() {
+        var quantity = parseFloat(this.value); 
+        var price  = document.getElementById('c_tripprice').value;
+        var totalCostInput = document.getElementById('c_totalcost');
+        if (!isNaN(quantity)) { 
+            var totalCost = quantity * price ; 
+            totalCostInput.value = totalCost.toFixed(); 
+        } else {
+            totalCostInput.value = ''; 
+        }
+    });
+ </script>

@@ -1,0 +1,46 @@
+@using Repositories.Models;
+@model List<Trip>
+
+
+@* <button />Add</button> *@
+<a href="Trip/Add">Add Trip</a> 
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Trip Id</th>
+            <th>Trip</th>
+            <th>Price</th>
+            <th>Ticket Stock</th>
+            <th>Current Stock</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trip in Model)
+        {
+            <tr>
+                <td>@trip.c_tripid</td>
+                <td>@trip.c_trip</td>
+                <td>@trip.c_tripprice</td>
+                <td>@trip.c_triptotalticket</td>
+                <td>@trip.c_tripcurrentticket</td>
+                <td>
+                    <a href="Trip/Details?id=@trip.c_tripid">Details</a>
+                    <a href="Trip/Edit?id=@trip.c_tripid">Edit</a>
+                    <a href="#" onclick="confirmDelete(@trip.c_tripid)">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+function confirmDelete(tripId) {
+    var result = confirm("Are you sure you want to delete this trip?");
+
+    if (result) {
+        window.location.href = "Trip/Delete?id=" + tripId;
+    }
+}
+</script>

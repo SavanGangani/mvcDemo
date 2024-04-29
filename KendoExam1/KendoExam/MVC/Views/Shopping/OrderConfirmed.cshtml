@@ -1,0 +1,27 @@
+@*@model IEnumerable<kendo_mvc_advance_krishna_tamakuwala.Models.t_checkouttable>*@
+@{
+    ViewBag.Title = "OrderConfirmed";
+    Layout = "~/Views/Shared/_CLayout.cshtml";
+}
+
+<script src="~/kendoui_new/js/jquery.min.js"></script>
+<script src="~/kendoui_new/js/kendo.all.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+
+<link href="~/kendoui_new/styles/default-turquoise.css" rel="stylesheet" />
+
+<h2>OrderConfirmed</h2>
+
+<p>Your order has been confirmd!</p>
+<p>Order Id : @ViewBag.orderId</p>
+
+<button id="btnGoBack" onclick="window.location = '/Shopping/Index';">Go back to Shop</button>
+
+<script>
+    $(document).ready(function () {
+        $("#btnGoBack").kendoButton();
+    });
+</script>

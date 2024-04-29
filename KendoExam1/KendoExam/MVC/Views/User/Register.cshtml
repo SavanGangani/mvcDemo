@@ -1,0 +1,91 @@
+@model Repositories.Models.User
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.1.301/styles/kendo.default-v2.min.css" />
+
+    <title>Login</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        .k-textbox {
+            width: 100%;
+            padding: 3px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 48px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form id="registrationForm" asp-action="Register" method="post">
+
+            <div>
+                <label for="name" class="k-d-inline-block">Name:</label>
+                <input id="c_username" name="c_username" />
+            </div>
+            <div>
+                <label for="email" class="k-d-inline-block">Email:</label>
+                <input id="c_email" name="c_email" />
+            </div>
+            <div>
+                <label for="password" class="k-d-inline-block">Password:</label>
+                <input id="c_password" name="c_password" />
+            </div>
+            <div>
+                <label for="password" class="k-d-inline-block">Confirm Password:</label>
+                <input id="confirmPassword" name="confirmPassword" />
+            </div>
+            <button id="save" type="submit">Submit</button>
+            <div class="sign-up">
+                Already have Account?
+                <a asp-controller="KendoUser" asp-action="Login">signIn now</a>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    $(document).ready(function (){
+        $("#c_username").kendoTextBox({
+            placeholder: "User Name"
+        });
+        $("#c_email").kendoTextBox({
+            placeholder : "Email Id"
+        });
+        $("#c_password").kendoTextBox({
+            placeholder : "Password"
+        });
+        $("#c_password").attr("type" , "password");
+        $("#confirmPassword").kendoTextBox({
+            placeholder : "Retype Password"
+        });
+        $("#confirmPassword").attr("type" , "password");
+
+        $("#save").kendoButton();
+
+    });
+</script>
+
+</html>

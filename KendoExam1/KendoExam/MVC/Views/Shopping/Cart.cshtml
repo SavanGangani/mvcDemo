@@ -1,0 +1,197 @@
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_CLayout.cshtml";
+}
+
+<style>
+    .album-cover {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-size: 100px 100px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 100px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0, 0, 0, .2);
+        margin-right: 5px;
+    }
+
+    #subTotalPrice {
+        margin-top: 20px;
+    }
+
+    .container-new {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<script src="~/kendoui_new/js/jquery.min.js"></script>
+<script src="~/kendoui_new/js/kendo.all.min.js"></script>
+
+<link href="~/kendoui_new/styles/default-turquoise.css" rel="stylesheet" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+
+<div id="emptyCart" class="container-new">
+    <h4>Looks like your cart is empty :(</h4>
+    <br><br>
+    <button id="btnGoBack" onclick="window.location = '/Shopping/Index';">Go back to Shop</button>
+</div>
+
+<div id="cart">
+    <div id="grid"></div>
+    <p id="subTotalPrice"></p>
+
+    <button id="btnCheckoutNow" onclick="window.location = '/Shopping/Checkout';">Checkout Now</button>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#btnGoBack").kendoButton();
+
+        // if there is no data in cart then button must be disable
+        var getCartData = {
+            "url": "https://localhost:7297/Shopping/GetAllCart",
+            "method": "GET",
+            "timeout": 0
+        }
+
+        $.ajax(getCartData).done(function (response) {
+            if (response.length < 1) {
+                $("#btnCheckoutNow").kendoButton({
+                    enable: false,
+                    themeColor: "primary"
+                });
+                $("#emptyCart").css('display', 'block');
+                $("#cart").css('display', 'none');
+            }
+            else {
+                $("#btnCheckoutNow").kendoButton({
+                    enable: true,
+                    themeColor: "primary"
+                });
+                $("#emptyCart").css('display', 'none');
+                $("#cart").css('display', 'block');
+            }
+        });
+
+        var dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "https://localhost:7297/Shopping/GetAllCart",
+                    type: "GET"
+                },
+                destroy: {
+                    url: function (data) {
+                        return "/Shopping/RemoveCart/" + data.c_shoppingid; // Updated URL construction
+                    },
+                    type: "POST",
+                    dataType: "json"
+                }
+
+            },
+            pageSize: 5,
+            autoSync: true,
+            schema: {
+                model: {
+                    id: "c_shoppingid",
+                    fields: {
+                        c_image: { type: "string", validation: { required: true }, editable: false },
+                        c_shoppingid: { type: "number", editable: false },
+                        c_albumid: { type: "number", editable: false },
+                        c_title: { type: "string", editable: false },
+                        c_price: { type: "number", editable: false },
+                        c_quantity: {
+                            type: "number", validation: {
+                                range: function (input) {
+                                    var min = parseFloat(1);
+                                    var max = parseFloat(100);
+                                    var value = parseFloat($(input).val(), 10);
+
+                                    if (isNaN(min) || isNaN(max) || isNaN(value)) {
+                                        return true;
+                                    }
+                                    return min <= value && value <= max;
+                                },
+                                validationMessage: 'Quantity must be greater than 0 or less than 100!'
+                            }
+                        },
+                        c_total_price: { type: "number", editable: false },
+                    }
+                }
+            }
+        });
+
+        $("#grid").kendoGrid({
+            dataSource: dataSource,
+            pageable: true,
+            columns: [
+                {
+                    field: "c_image",
+                    title: "Album Cover",
+                    template: "<div class='album-cover'  style='background-image: url(#: c_image #);'></div>"
+                },
+                {
+                    field: "c_shoppingid",
+                    title: "Customer Id",
+                    hidden: true
+                },
+                {
+                    field: "c_albumid",
+                    title: "Album Id",
+                    hidden: true
+                },
+                {
+                    field: "c_title",
+                    title: "Title"
+                },
+                {
+                    field: "c_price",
+                    title: "Price in ₹",
+                    template: ({ c_price }) => `<p style="margin: 0;">₹${kendo.htmlEncode(c_price)}</p>`
+                },
+                {
+                    field: "c_quantity",
+                    title: "Quantity"
+                },
+                {
+                    field: "c_total_price",
+                    title: "Total Price in ₹",
+                    template: ({ c_total_price }) => `<p style="margin: 0;">₹${kendo.htmlEncode(c_total_price)}</p>`
+                },
+                {
+                    command: "destroy",
+                    title: "&nbsp;"
+                }
+            ],
+            editable: true,
+
+            // change sub total
+            dataBound: function (e) {
+                var gridData = $("#grid").data().kendoGrid.dataSource.view();
+                let subTotalPrice = 0;
+                gridData.forEach(element => {
+                    subTotalPrice = subTotalPrice + element.c_total_price;
+                });
+                $("#subTotalPrice").html('Sub Total: ' + '<h4>' + '₹' + subTotalPrice + '</h4>');
+            }
+        });
+
+        // change total price when quantity is changed
+        $("#grid").data("kendoGrid").dataSource.bind("change", function (e) {
+            console.log(e);
+
+            // change each and every value of total if ones quantity is changed
+            $.each(e.items, function (index, value) {
+                e.items[index].totalPrice = e.items[index].c_price * e.items[index].c_qty;
+            });
+
+            $("#grid").data("kendoGrid").refresh();
+        });
+
+    });
+</script>

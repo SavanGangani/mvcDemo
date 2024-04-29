@@ -1,0 +1,17 @@
+@using Repositories.Models;
+@model Executive
+
+
+<form asp-action="Login" asp-controller="Executive" method="post" class="mt-5">
+    <div class="mb-3">
+        <label asp-for="t_userid" class="form-label">Email:</label>
+        <input asp-for="t_userid" class="form-control" placeholder="Enter your email">
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="t_userpassword" class="form-label">Password:</label>
+        <input asp-for="t_userpassword" class="form-control" type="password" placeholder="Enter your password">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>

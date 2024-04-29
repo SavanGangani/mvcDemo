@@ -1,0 +1,21 @@
+@using Repositories.Models;
+@model Trip
+
+<h1>Add Item</h1>
+
+<form asp-action="Add" method="post" enctype="multipart/form-data">
+
+  <div class="form-group">
+    <label >Trip:</label>
+    <select asp-for="c_trip" class="form-control" required>
+        <option value="">Select Trip</option>
+        <option value="Surat-To-Mumbai">Surat-To-Mumbai</option>
+        <option value="Mumbai-To-Surat">Mumbai-To-Surat</option>
+        <option value="Surat-To-Diu">Surat-To-Diu</option>
+         <option value="Diu-To-Surat">Diu-To-Surat</option>
+    </select>
+</div>
+
+   
+    <button type="submit" class="btn btn-primary">Add Trip</button>
+</form>

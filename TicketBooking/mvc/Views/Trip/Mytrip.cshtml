@@ -1,0 +1,51 @@
+@using Repositories.Models;
+@model List<Trip>
+
+
+<h3>My  Trip</h3> 
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Trip Id</th>
+            <th>Trip</th>
+            <th>Price</th>
+            <th>Trip Date</th>
+            <th>Qty</th>
+            <th>Cost</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trip in Model)
+        {
+            <tr>
+                <td>@trip.c_tripcustid</td>
+                <td>@trip.c_trip</td>
+                <td>@trip.c_tripprice</td>
+                <td>@trip.c_tripdate</td>
+                <td>@trip.c_tripqty</td>
+                <td>@trip.c_totalcost</td>
+                <td>
+                    @* <a href="Book?id=@trip.c_tripid">Cancel</a> *@
+                    @* <a href="Trip/Edit?id=@trip.c_tripid">Cancel</a> *@
+@if(@trip.c_tripstatus != "Cancelled"){
+
+                    <a href="#" onclick="confirmCancel(@trip.c_tripcustid)">Cancel</a>
+}
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+function confirmCancel(tripId) {
+    var result = confirm("Are you sure you want to Cancel this trip? "+ tripId);
+
+    if (result) {
+        window.location.href = "/Trip/Cancel?id=" + tripId;
+    }
+}
+</script>

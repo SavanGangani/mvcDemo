@@ -1,0 +1,30 @@
+@model Repositories.Models.Customer
+
+<form method="post" asp-action="TaskUpdate" asp-controller="Executive">
+    <div class="mb-3">
+        <label for="c_tokenid" class="form-label">Token ID</label>
+        <input type="text" class="form-control" id="c_tokenid" asp-for="c_tokenid" value="@Model?.c_tokenid"
+            placeholder="Enter Token ID" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="c_tokentype" class="form-label">Token Type</label>
+        <input type="text" class="form-control" id="c_tokentype" name="c_tokentype" value="@Model.c_tokentype"
+            placeholder="Enter Token Type" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="c_tokenstatus" class="form-label">Token Status</label>
+        <input type="text" class="form-control" asp-for="c_tokenstatus" id="c_tokenstatus" name="c_tokenstatus"
+            value="@Model.c_tokenstatus" placeholder="Enter Token Status" required>
+    </div>
+    <div class="mb-3">
+        <label for="c_username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="c_username" name="c_username" asp-for="c_username"
+            placeholder="Enter Username" required>
+    </div>
+    <div class="mb-3">
+        <label for="c_usermobile" class="form-label">User Mobile</label>
+        <input type="text" class="form-control" id="c_usermobile" name="c_usermobile" asp-for="c_usermobile"
+            placeholder="Enter User Mobile" required>
+    </div>
+    <button type="submit" class="btn btn-primary"> Save </button>
+</form>

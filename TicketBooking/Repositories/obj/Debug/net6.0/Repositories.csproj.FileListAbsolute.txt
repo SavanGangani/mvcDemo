@@ -1,0 +1,12 @@
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\bin\Debug\net6.0\Repositories.deps.json
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\bin\Debug\net6.0\Repositories.dll
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\bin\Debug\net6.0\Repositories.pdb
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\Repositories.csproj.AssemblyReference.cache
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\Repositories.GeneratedMSBuildEditorConfig.editorconfig
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\Repositories.AssemblyInfoInputs.cache
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\Repositories.AssemblyInfo.cs
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\Repositories.csproj.CoreCompileInputs.cache
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\Repositories.dll
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\refint\Repositories.dll
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\Repositories.pdb
+F:\PPSU\sem-08\casepoint\CoreMvc\WeeklyExam\exam\Repositories\obj\Debug\net6.0\ref\Repositories.dll
